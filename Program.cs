@@ -30,7 +30,8 @@ namespace GameOfLifeAscii
 
         const int WIDTH = 16, HEIGHT = 16;
         const char LIVE_CELL_CHAR = '#', DEAD_CELL_CHAR = '*';
-        static Random random = new Random();
+
+        static readonly Random random = new Random();
 
         static void Main(string[] args)
         {
@@ -40,12 +41,6 @@ namespace GameOfLifeAscii
 
             char[,] table = CreateTabletop(HEIGHT, WIDTH); //TENER EN CUENTA QUE PRIMERO VA LA Y Y LUEGO LA X
 
-            Point initialPoint = new Point(WIDTH / 2 - 1, HEIGHT / 2);
-            Point initialPoint3 = new Point(WIDTH /2 + 1, HEIGHT /2);
-            Point initialPoint2 = new Point(WIDTH / 2, HEIGHT / 2);
-            Point initialPoint4 = new Point(WIDTH / 2 + 1, HEIGHT / 2 - 1);
-            Point initialPoint5 = new Point(WIDTH / 2, HEIGHT / 2 - 2);
-
             Console.Read();
 
             for (int i = -5; i < 5; i++)
@@ -54,6 +49,7 @@ namespace GameOfLifeAscii
                 AliveCell(table, p);
             }
 
+            //Principal loop
             while (true)
             {
                 ShowTabletop(table);
@@ -65,7 +61,7 @@ namespace GameOfLifeAscii
 
         static char[,] CreateTabletop(int height, int width)
         {
-            char[ , ] table = new char[height, width];
+            char[,] table = new char[height, width];
 
             for (int y = 0; y < height; y++)
             {
@@ -80,7 +76,6 @@ namespace GameOfLifeAscii
 
         static void ShowTabletop(char[,] table)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
             for (int y = 0; y < HEIGHT; y++)
             {
                 Console.WriteLine();
@@ -99,61 +94,6 @@ namespace GameOfLifeAscii
                 }
             }
         }
-
-        static List<Point> UpdateCellsCircle(char[,] table, List<Point> liveCellsPoints)
-        {
-            List<Point> auxLiveCellsPoints = new List<Point>();
-
-            foreach (Point p in liveCellsPoints)
-            {
-                Point pointIzq = new Point(p.X() - 1, p.Y());
-                if (ExistPoint(table, pointIzq))
-                {
-                    if (!IsCellLiveOnTable(table, pointIzq))
-                    {
-                        AliveCell(table, pointIzq);
-                        auxLiveCellsPoints.Add(pointIzq);
-                    }
-                }
-
-                Point pointDer = new Point(p.X() + 1, p.Y());
-                if (ExistPoint(table, pointDer))
-                {
-                    if (!IsCellLiveOnTable(table, pointDer))
-                    {
-                        AliveCell(table, pointDer);
-                        auxLiveCellsPoints.Add(pointDer);
-                    }
-                }
-
-                Point pointAbj = new Point(p.X(), p.Y() + 1); 
-                if (ExistPoint(table, pointAbj))
-                {
-                    if (!IsCellLiveOnTable(table, pointAbj))
-                    {
-                        AliveCell(table, pointAbj);
-                        auxLiveCellsPoints.Add(pointAbj);
-                    }
-                }
-
-                Point pointArr = new Point(p.X(), p.Y() - 1);
-                if (ExistPoint(table, pointArr))
-                {
-                    if (!IsCellLiveOnTable(table, pointArr))
-                    {
-                        AliveCell(table, pointArr);
-                        auxLiveCellsPoints.Add(pointArr);
-                    }
-                }
-
-                KillCell(table, p);
-            } //end foreach
-
-            //Elimina una celula aleatorio de las nuevas
-            //auxLiveCellsPoints.RemoveAt(random.Next(0, auxLiveCellsPoints.Count));
-
-            return auxLiveCellsPoints;
-        } //end function
 
         static char[,] GameOfLife(char[,] table)
         {
@@ -309,6 +249,29 @@ namespace GameOfLifeAscii
             }
         }
 
+        static int NeighboursNumber(char[,] table, Point p)
+        {
+            int neighbours = 0;
+
+            for (int y = 1; y > -2; y--)
+            {
+                for (int x = - 1; x < 2; x++)
+                {
+                    if (x != 0 && y != 0)
+                    {
+                        Point point = new Point(p.X() - x, p.Y() - y);
+                        if (ExistPoint(table, point))
+                        {
+                            if (GetCellState(table, point) == LIVE_CELL_CHAR)
+                                neighbours++;
+                        }
+                    }
+                }
+            }
+
+            return neighbours;
+        }
+
         static char[,] CopyTable(char[,] table)
         {
             char[,] auxTable = new char[HEIGHT, WIDTH];
@@ -331,19 +294,15 @@ namespace GameOfLifeAscii
             return auxTable;
         }
 
+        /// <summary>
+        /// Check if a Point is in the table.
+        /// </summary>
+        /// <param name="table">Game Table</param>
+        /// <param name="p">Point</param>
+        /// <returns>True if the point exists, false if not</returns>
         static bool ExistPoint(char[,] table, Point p)
         {
             if ((p.X() >= 0 && p.X() < WIDTH && (p.Y() >= 0 && p.Y() < HEIGHT)))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        static bool ExistPoint(char[,] table, int x, int y)
-        {
-            if ((x >= 0 && x < WIDTH && (y >= 0 && y < HEIGHT)))
             {
                 return true;
             }
@@ -359,11 +318,6 @@ namespace GameOfLifeAscii
         static void KillCell(char[,] table, Point p)
         {
             table[p.Y(), p.X()] = DEAD_CELL_CHAR;
-        }
-
-        static bool IsCellLiveOnTable(char[,] table, Point p)
-        {
-            return table[p.Y(), p.X()].Equals(LIVE_CELL_CHAR);
         }
 
         static char GetCellState(char[,] table, Point p)
