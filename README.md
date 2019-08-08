@@ -1,2 +1,2 @@
 # GameOfLifeAscii
- An Ascii version of Conways "Game of Life"
+ An Ascii version of Conway's "Game of Life"
