@@ -1,0 +1,7 @@
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\bin\Debug\GameOfLifeAscii.exe.config
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\bin\Debug\GameOfLifeAscii.exe
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\bin\Debug\GameOfLifeAscii.pdb
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\obj\Debug\GameOfLifeAscii.csprojAssemblyReference.cache
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\obj\Debug\GameOfLifeAscii.csproj.CoreCompileInputs.cache
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\obj\Debug\GameOfLifeAscii.exe
+C:\Users\Delunado\Desktop\GameOfLifeAscii\GameOfLifeAscii\obj\Debug\GameOfLifeAscii.pdb
