@@ -22,31 +22,79 @@ namespace GameOfLifeAscii
             public int Y() { return y; }
         }
 
-        const int WIDTH = 16, HEIGHT = 16;
+        static int WIDTH = 16, HEIGHT = 16;
         const char LIVE_CELL_CHAR = '#', DEAD_CELL_CHAR = '*';
 
         static void Main(string[] args)
         {
-            Console.CursorVisible = false;
-
             char[,] table = CreateGameTable(HEIGHT, WIDTH); //BE CAREFUL: FIRST Y, SECOND X
 
-            Console.Read();
-
+            //We create 10 initial points
             for (int i = -5; i < 5; i++)
             {
                 Point p = new Point(WIDTH / 2 + i, HEIGHT / 2);
                 AliveCell(table, p);
             }
 
-            //Principal loop
-            while (true)
+            MainMenu(table);
+        }
+
+        //******MENU METHODS******
+        static void MainMenu(char[,] table)
+        {
+            ShowMenu(table);
+            Console.Write("\n> ");
+
+            bool runMenu = true;
+            while (runMenu)
             {
-                ShowTabletop(table);
-                System.Threading.Thread.Sleep(100);
-                Console.Clear();
-                table = GameOfLife(table);
+                int option = 0;
+                option = TryParseInt(Console.ReadLine());
+
+                switch (option)
+                {
+                    case 1:
+                        Console.Clear();
+                        GameLoop(table);
+                        ShowMenu(table);
+                        break;
+                    case 2:
+                        AddCellOnPointMenu(table);
+                        ShowMenu(table);
+                        break;
+                    case 3:
+                        EliminateCellOnPointMenu(table);
+                        ShowMenu(table);
+                        break;
+                    case 4:
+                        ResizeTable();
+                        table = CreateGameTable(HEIGHT, WIDTH);
+                        ShowMenu(table);
+                        break;
+                    case 5:
+                        Console.WriteLine("Bye!");
+                        runMenu = false;
+                        break;
+                }
+
+                if (runMenu)
+                {
+                    Console.Write("\n> ");
+                }
             }
+        }
+
+        static void ShowMenu(char[,] table)
+        {
+            Console.Clear();
+            ShowTabletop(table);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("\n");
+            Console.WriteLine("1. Start Game");
+            Console.WriteLine("2. Add Live Cell");
+            Console.WriteLine("3. Remove Live Cell");
+            Console.WriteLine("4. Resize Table. It erases all the live cells!");
+            Console.WriteLine("5. Exit");
         }
 
         //******GAME METHODS******
@@ -121,6 +169,82 @@ namespace GameOfLifeAscii
             }
 
             return auxTable;
+        }
+
+        static void GameLoop(char[,] table)
+        {
+            while (true)
+            {
+                Console.CursorVisible = false;
+                ShowTabletop(table);
+                System.Threading.Thread.Sleep(100);
+                Console.Clear();
+                table = GameOfLife(table);
+            }
+        }
+
+        static void AddCellOnPointMenu(char[,] table)
+        {
+            int x = 0, y = 0;
+
+            do
+            {
+                Console.WriteLine("Add a live cell on a valid point (TABLE SIZE: {0} x {1}).", WIDTH, HEIGHT);
+
+                Console.Write("X: ");
+                x = TryParseInt(Console.ReadLine());
+
+                Console.Write("Y: ");
+                y = TryParseInt(Console.ReadLine());
+
+            } while (!((x >= 0 && x < WIDTH) && (y >= 0 && y < HEIGHT)));
+
+            AliveCell(table, new Point(x, y));
+        }
+
+        static void EliminateCellOnPointMenu(char[,] table)
+        {
+            int x = 0, y = 0;
+
+            do
+            {
+                Console.WriteLine("Kill a live cell on a valid point (TABLE SIZE: {0} x {1}).", WIDTH, HEIGHT);
+
+                Console.Write("X: ");
+                x = TryParseInt(Console.ReadLine());
+
+                Console.Write("Y: ");
+                y = TryParseInt(Console.ReadLine());
+
+            } while (!((x >= 0 && x < WIDTH) && (y >= 0 && y < HEIGHT)));
+
+            KillCell(table, new Point(x, y));
+        }
+
+        static void ResizeTable()
+        {
+            int x = 0, y = 0;
+
+            do
+            {
+                Console.WriteLine("Resize the table. Min: 1 - Max: 32. Actual Size: {0} x {1}", WIDTH, HEIGHT);
+                Console.Write("X: ");
+
+                if (int.TryParse(Console.ReadLine(), out int optx))
+                {
+                    x = optx;
+                }
+
+                Console.Write("Y: ");
+                if (int.TryParse(Console.ReadLine(), out int opty))
+                {
+                    y = opty;
+                }
+
+            } while (!((x > 0 && x <= 32) && (y > 0 && y <= 32)));
+
+            WIDTH = x;
+            HEIGHT = x;
         }
 
         //******GAME RULES******
@@ -257,5 +381,20 @@ namespace GameOfLifeAscii
         {
             return table[p.Y(), p.X()];
         }
+
+        static int TryParseInt(string strInt)
+        {
+            int number = 0;
+            if (int.TryParse(strInt, out int opt))
+            {
+                number = opt;
+            } else
+            {
+                number = -1;
+            }
+
+            return number;
+        }
+
     }
 }
