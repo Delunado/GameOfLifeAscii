@@ -29,7 +29,7 @@ namespace GameOfLifeAscii
         {
             char[,] table = CreateGameTable(HEIGHT, WIDTH); //BE CAREFUL: FIRST Y, SECOND X
 
-            //We create 10 initial points
+            //We create 10 initial points. A basic patron.
             for (int i = -5; i < 5; i++)
             {
                 Point p = new Point(WIDTH / 2 + i, HEIGHT / 2);
@@ -171,6 +171,10 @@ namespace GameOfLifeAscii
             return auxTable;
         }
 
+        /// <summary>
+        /// Principal game loop, where the game starts and the rules are applied until you close the program.
+        /// </summary>
+        /// <param name="table"></param>
         static void GameLoop(char[,] table)
         {
             while (true)
@@ -183,6 +187,10 @@ namespace GameOfLifeAscii
             }
         }
 
+        /// <summary>
+        /// Adds a live cell on the point indicated by user value.
+        /// </summary>
+        /// <param name="table">Game Table</param>
         static void AddCellOnPointMenu(char[,] table)
         {
             int x = 0, y = 0;
@@ -202,6 +210,10 @@ namespace GameOfLifeAscii
             AliveCell(table, new Point(x, y));
         }
 
+        /// <summary>
+        /// Kills a cell on the point indicated by user value.
+        /// </summary>
+        /// <param name="table">Game Table</param>
         static void EliminateCellOnPointMenu(char[,] table)
         {
             int x = 0, y = 0;
@@ -221,6 +233,9 @@ namespace GameOfLifeAscii
             KillCell(table, new Point(x, y));
         }
 
+        /// <summary>
+        /// Resize the table to the user value.
+        /// </summary>
         static void ResizeTable()
         {
             int x = 0, y = 0;
@@ -228,18 +243,12 @@ namespace GameOfLifeAscii
             do
             {
                 Console.WriteLine("Resize the table. Min: 1 - Max: 32. Actual Size: {0} x {1}", WIDTH, HEIGHT);
-                Console.Write("X: ");
 
-                if (int.TryParse(Console.ReadLine(), out int optx))
-                {
-                    x = optx;
-                }
+                Console.Write("X: ");
+                x = TryParseInt(Console.ReadLine());
 
                 Console.Write("Y: ");
-                if (int.TryParse(Console.ReadLine(), out int opty))
-                {
-                    y = opty;
-                }
+                y = TryParseInt(Console.ReadLine());
 
             } while (!((x > 0 && x <= 32) && (y > 0 && y <= 32)));
 
@@ -382,6 +391,11 @@ namespace GameOfLifeAscii
             return table[p.Y(), p.X()];
         }
 
+        /// <summary>
+        /// Try to parse a number from a string input and returns that number. If the number is not correct, it returns -1. 
+        /// </summary>
+        /// <param name="strInt">The string to parse</param>
+        /// <returns>The parsed int</returns>
         static int TryParseInt(string strInt)
         {
             int number = 0;
@@ -395,6 +409,5 @@ namespace GameOfLifeAscii
 
             return number;
         }
-
     }
 }
