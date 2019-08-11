@@ -151,8 +151,9 @@ namespace GameOfLifeAscii
         /// <returns></returns>
         static char[,] GameOfLife(char[,] table)
         {
-            char[,] auxTable = CopyTable(table);
-
+            char[,] auxTable = new char[table.GetLength(0), table.GetLength(1)];
+            Array.Copy(table, 0, auxTable, 0, table.Length);
+            
             for (int y = 0; y < HEIGHT; y++)
             {
                 for (int x = 0; x < WIDTH; x++)
@@ -337,33 +338,6 @@ namespace GameOfLifeAscii
         }
 
         //******AUX METHODS******
-        /// <summary>
-        /// Creates a copy of the param table. 
-        /// </summary>
-        /// <param name="table">The table you want to copy</param>
-        /// <returns>A copy of the table</returns>
-        static char[,] CopyTable(char[,] table)
-        {
-            char[,] auxTable = new char[HEIGHT, WIDTH];
-
-            for (int y = 0; y < HEIGHT; y++)
-            {
-                for (int x = 0; x < WIDTH; x++)
-                {
-                    Point p = new Point(x, y);
-                    if (GetCellState(table, p) == LIVE_CELL_CHAR)
-                    {
-                        AliveCell(auxTable, p);
-                    } else
-                    {
-                        KillCell(auxTable, p);
-                    }
-                }
-            }
-
-            return auxTable;
-        }
-
         /// <summary>
         /// Check if a Point is in the table.
         /// </summary>
